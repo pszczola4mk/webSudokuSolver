@@ -1,4 +1,4 @@
-package com.example.application.views.uploadsudoku;
+package pl.wojo.views.uploadsudoku;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,11 +9,12 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -23,7 +24,7 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.internal.MessageDigestUtil;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.main.MainView;
+import pl.wojo.views.main.MainView;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.server.StreamResource;
@@ -44,7 +45,7 @@ public class UploadsudokuView extends Div {
         upload.setMaxFiles(1);
         upload.setDropLabel(new Label("Upload a 500 kb file in .png format"));
         upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
-        upload.setMaxFileSize(5000);
+        upload.setMaxFileSize(500000);
         Div output = new Div();
 
         upload.addSucceededListener(event -> {
@@ -61,8 +62,14 @@ public class UploadsudokuView extends Div {
         upload.getElement().addEventListener("file-remove", event -> {
             output.removeAll();
         });
-
         add(upload, output);
+        Button button = new Button("Resolve");
+        button.addClickListener(this::resolveSudoku);
+        add(button);
+    }
+
+    private void resolveSudoku(ClickEvent<Button> buttonClickEvent) {
+        log.info("resolveSudoku");
     }
 
     private Component createComponent(String mimeType, String fileName, InputStream stream) {

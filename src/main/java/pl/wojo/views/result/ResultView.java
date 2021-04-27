@@ -1,10 +1,10 @@
-package com.example.application.views.result;
+package pl.wojo.views.result;
 
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.main.MainView;
+import pl.wojo.views.main.MainView;
 import com.vaadin.flow.component.dependency.CssImport;
 
 @Route(value = "result", layout = MainView.class)

@@ -1,4 +1,4 @@
-package com.example.application.views.main;
+package pl.wojo.views.main;
 
 import java.util.Optional;
 
@@ -17,14 +17,11 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import com.example.application.views.main.MainView;
-import com.example.application.views.uploadsudoku.UploadsudokuView;
-import com.example.application.views.insertsudoku.InsertsudokuView;
-import com.example.application.views.result.ResultView;
-import com.example.application.views.about.AboutView;
+import pl.wojo.views.uploadsudoku.UploadsudokuView;
+import pl.wojo.views.insertsudoku.InsertsudokuView;
+import pl.wojo.views.result.ResultView;
+import pl.wojo.views.about.AboutView;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.CssImport;
 
