@@ -117,8 +117,12 @@ public class UploadsudokuView extends Div {
                         ImageReader reader = readers.next();
                         try {
                             reader.setInput(in);
-                            image.setWidth(reader.getWidth(0) + "px");
-                            image.setHeight(reader.getHeight(0) + "px");
+                            int width = reader.getWidth(0);
+                            int scale = width/200;
+                            int newWidth = width/scale;
+                            int newHeight = reader.getHeight(0)/scale;
+                            image.setWidth(newWidth + "px");
+                            image.setHeight(newHeight + "px");
                         } finally {
                             reader.dispose();
                         }
@@ -127,7 +131,7 @@ public class UploadsudokuView extends Div {
             } catch (IOException e) {
                log.error("Error during img upload: "+e.getMessage(),e);
             }
-            image.setSizeFull();
+            //image.setSizeFull();
             return image;
         }
         Div content = new Div();
