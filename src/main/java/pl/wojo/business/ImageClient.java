@@ -12,4 +12,7 @@ public interface ImageClient {
 
 	@RequestMapping(value = "/resolve", method = RequestMethod.POST)
 	String resolveSudoku(@RequestBody Image image);
+
+	@RequestMapping(value = "/resolveText", method = RequestMethod.POST)
+	String resolveText(@RequestBody String text);
 }

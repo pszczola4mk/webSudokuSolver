@@ -84,20 +84,24 @@ public class UploadsudokuView extends Div {
         log.info("resolveSudoku");
         if (this.base64Image != null) {
             String resolvedSudoku = this.imageClient.resolveSudoku(new pl.wojo.business.model.Image("sudoku", base64Image));
-            this.resolvePlaceholder.removeAllChildren();
-            String[] rows = resolvedSudoku.split(";");
-            for (String row : rows) {
-                Element tableRow = new Element("tr");
-                String[] cols = row.split("\\|");
-                for (String col : cols) {
-                    if (StringUtils.isNotEmpty(col)) {
-                        Element tableCell = new Element("td");
-                        tableCell.setText(col);
-                        tableRow.appendChild(tableCell);
-                    }
+            insertToTable(resolvedSudoku);
+        }
+    }
+
+    private void insertToTable(String resolvedSudoku) {
+        this.resolvePlaceholder.removeAllChildren();
+        String[] rows = resolvedSudoku.split(";");
+        for (String row : rows) {
+            Element tableRow = new Element("tr");
+            String[] cols = row.split("\\|");
+            for (String col : cols) {
+                if (StringUtils.isNotEmpty(col)) {
+                    Element tableCell = new Element("td");
+                    tableCell.setText(col);
+                    tableRow.appendChild(tableCell);
                 }
-                this.resolvePlaceholder.appendChild(tableRow);
             }
+            this.resolvePlaceholder.appendChild(tableRow);
         }
     }
 
