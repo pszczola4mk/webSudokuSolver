@@ -3,6 +3,7 @@ package pl.wojo.views.uploadsudoku;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
@@ -15,21 +16,25 @@ import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import com.vaadin.flow.dom.Element;
 import com.vaadin.flow.internal.MessageDigestUtil;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.PageTitle;
-import pl.wojo.views.main.MainView;
+import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.server.StreamResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.wojo.business.ImageClient;
+import pl.wojo.views.main.MainView;
 
 @Route(value = "upload", layout = MainView.class)
 @RouteAlias(value = "", layout = MainView.class)
@@ -37,6 +42,11 @@ import org.apache.commons.compress.utils.IOUtils;
 @CssImport("./views/uploadsudoku/uploadsudoku-view.css")
 @Slf4j
 public class UploadsudokuView extends Div {
+
+    private final Element resolvePlaceholder;
+    private String base64Image;
+    @Autowired
+    private ImageClient imageClient;
 
     public UploadsudokuView() {
         addClassName("uploadsudoku-view");
@@ -66,10 +76,29 @@ public class UploadsudokuView extends Div {
         Button button = new Button("Resolve");
         button.addClickListener(this::resolveSudoku);
         add(button);
+        this.resolvePlaceholder = new Element("table");
+        getElement().appendChild(this.resolvePlaceholder);
     }
 
     private void resolveSudoku(ClickEvent<Button> buttonClickEvent) {
         log.info("resolveSudoku");
+        if (this.base64Image != null) {
+            String resolvedSudoku = this.imageClient.resolveSudoku(new pl.wojo.business.model.Image("sudoku", base64Image));
+            this.resolvePlaceholder.removeAllChildren();
+            String[] rows = resolvedSudoku.split(";");
+            for (String row : rows) {
+                Element tableRow = new Element("tr");
+                String[] cols = row.split("\\|");
+                for (String col : cols) {
+                    if (StringUtils.isNotEmpty(col)) {
+                        Element tableCell = new Element("td");
+                        tableCell.setText(col);
+                        tableRow.appendChild(tableCell);
+                    }
+                }
+                this.resolvePlaceholder.appendChild(tableRow);
+            }
+        }
     }
 
     private Component createComponent(String mimeType, String fileName, InputStream stream) {
@@ -77,6 +106,7 @@ public class UploadsudokuView extends Div {
             Image image = new Image();
             try {
                 byte[] bytes = IOUtils.toByteArray(stream);
+                convertToBase64(bytes);
                 image.getElement().setAttribute("src", new StreamResource(
                         fileName, () -> new ByteArrayInputStream(bytes)));
                 try (ImageInputStream in = ImageIO.createImageInputStream(
@@ -108,6 +138,9 @@ public class UploadsudokuView extends Div {
 
     }
 
+    private void convertToBase64(byte[] imageData) {
+        this.base64Image = Base64.getEncoder().encodeToString(imageData);
+    }
 
 
     private void showOutput(String text, Component content, HasComponents outputContainer) {
